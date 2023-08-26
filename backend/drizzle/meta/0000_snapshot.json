@@ -1,0 +1,44 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "c8895259-41cb-4bef-898d-d542fd262bab",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "tracks": {
+      "name": "tracks",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "tracks_id": {
+          "name": "tracks_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

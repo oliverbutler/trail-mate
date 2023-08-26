@@ -1,21 +1,6 @@
 version: '3.8'
 
 services:
-  backend-app:
-    build:
-      context: ./backend/
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_HOST=trail-mate-db
-      - DATABASE_PORT=3306
-      - DATABASE_USER=root
-      - DATABASE_PASSWORD=examplepassword
-      - DATABASE_NAME=trailmate
-    depends_on:
-      - trail-mate-db
-
   trail-mate-db:
     image: mysql:8.0
     container_name: trail-mate-db

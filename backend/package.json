@@ -6,19 +6,26 @@
   "scripts": {
     "dev": "tsx watch src",
     "build": "rm -rf dist && tsx esbuild.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "migrations:generate": "drizzle-kit generate:mysql --schema=./src/schema.ts",
+    "migrations:run": "tsx ./src/migrate.ts"
   },
   "keywords": [],
   "author": "Oliver Butler",
   "license": "ISC",
   "dependencies": {
+    "cuid": "^3.0.0",
+    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.28.5",
     "fastify": "^4.21.0",
+    "mysql2": "^3.6.0",
     "tsx": "^3.12.7"
   },
   "devDependencies": {
     "@types/node": "^20.5.6",
-    "typescript": "^5.2.2",
+    "drizzle-kit": "^0.19.13",
     "esbuild": "^0.19.2",
-    "glob": "^10.3.3"
+    "glob": "^10.3.3",
+    "typescript": "^5.2.2"
   }
 }

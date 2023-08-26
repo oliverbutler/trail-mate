@@ -71,7 +71,7 @@ resource "aws_iam_role_policy_attachment" "ecs_execution_logging_policy_attachme
 
 
 
-resource "aws_lb" "trail_mate_lb" {
+resource "aws_lb" "trail_mate_alb" {
   name               = "trail-mate-lb"
   internal           = false
   load_balancer_type = "application"
@@ -100,7 +100,7 @@ resource "aws_lb_target_group" "trail_mate_target_group" {
 }
 
 resource "aws_lb_listener" "trail_mate_listener" {
-  load_balancer_arn = aws_lb.trail_mate_lb.arn
+  load_balancer_arn = aws_lb.trail_mate_alb.arn
   port              = "80"
   protocol          = "HTTP"
 

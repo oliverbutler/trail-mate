@@ -27,6 +27,9 @@ resource "aws_apigatewayv2_integration" "trail_mate_integration" {
   description      = "Integration for Trail Mate Service"
   integration_method = "ANY"
   integration_uri = aws_lb_listener.trail_mate_listener.arn
+
+  payload_format_version = "1.0"
+
 }
 
 # Deploy the HTTP API
@@ -40,6 +43,5 @@ resource "aws_apigatewayv2_deployment" "trail_mate_api_deployment" {
 resource "aws_apigatewayv2_stage" "trail_mate_api_stage" {
   api_id        = aws_apigatewayv2_api.trail_mate_api.id
   name          = "prod"
-  deployment_id = aws_apigatewayv2_deployment.trail_mate_api_deployment.id
   auto_deploy   = true
 }

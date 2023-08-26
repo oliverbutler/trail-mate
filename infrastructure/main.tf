@@ -16,3 +16,11 @@ provider "aws" {
 resource "aws_s3_bucket" "bucket" {
   bucket = "trail-mate"
 }
+
+resource "aws_budgets_budget" "warning" {
+  budget_type       = "COST"
+  limit_amount      = "10"
+  limit_unit        = "USD"
+  time_period_start = "2023-08-01_00:00"
+  time_unit         = "MONTHLY"
+}

@@ -69,11 +69,9 @@ resource "aws_iam_role_policy_attachment" "ecs_execution_logging_policy_attachme
   policy_arn = aws_iam_policy.ecs_logging_policy.arn
 }
 
-
-
 resource "aws_lb" "trail_mate_alb" {
   name               = "trail-mate-lb"
-  internal           = false
+  internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.trail_mate_sg.id]
   subnets            = [aws_subnet.trail_mate_subnet_a.id, aws_subnet.trail_mate_subnet_b.id]
@@ -193,6 +191,10 @@ resource "aws_ecs_task_definition" "trail_mate_task" {
     portMappings = [{
       containerPort = 3000
       hostPort      = 3000
+    }]
+    environment = [{
+      name  = "API_PREFIX",
+      value = "/prod"
     }]
     logConfiguration = {
       logDriver = "awslogs"

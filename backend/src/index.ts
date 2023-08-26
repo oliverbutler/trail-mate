@@ -9,7 +9,7 @@ dotenv.config();
 
 const server = fastify()
 
-const { HOST = 'localhost', PORT = '3000' } = process.env;
+const { HOST = 'localhost', PORT = '3000', API_PREFIX = "" } = process.env;
 
 // const connection  = mysql.createConnection({
 //   host: process.env.DATABASE_HOST || '',
@@ -21,30 +21,36 @@ const { HOST = 'localhost', PORT = '3000' } = process.env;
 //
 // const db = drizzle(connection);
 
-server.get('/tracks', async (request, reply) => {
-  console.log("GET /tracks")
-
-  return [
-    {
-      id: 1,
-      title: 'Some track',
-    },
-  ]
-})
 
 
-server.get("/health", async (request, reply) => {
+server.register((app, _, done) => {
+  app.get("/health", async (request, reply) => {
 
-  console.log("GET /health")
-  return {
+    console.log("GET /health")
+    return {
       status: "ok",
       uptime: process.uptime(),
-  }
+    }
+  })
+
+  app.get('/tracks', async (request, reply) => {
+    console.log("GET /tracks")
+
+    return [
+      {
+        id: 1,
+        title: 'Some track',
+      },
+    ]
+  })
+
+  done()
+
+}, {
+  prefix: API_PREFIX
 })
 
-
-
-server.listen({ port: parseInt(PORT), host: HOST }, (err, address) => {
+server.listen({ port: parseInt(PORT), host: HOST, path: "/v1"  }, (err, address) => {
   if (err) {
     console.error(err)
     process.exit(1)

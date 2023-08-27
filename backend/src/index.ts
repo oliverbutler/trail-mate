@@ -9,7 +9,7 @@ dotenv.config();
 
 const server = fastify()
 
-const { HOST = 'localhost', PORT = '3000', API_PREFIX = "" } = process.env;
+const { HOST = 'localhost', PORT = '3000' } = process.env;
 
 // const connection  = mysql.createConnection({
 //   host: process.env.DATABASE_HOST || '',
@@ -22,42 +22,32 @@ const { HOST = 'localhost', PORT = '3000', API_PREFIX = "" } = process.env;
 // const db = drizzle(connection);
 
 
+server.get("/health", async (request, reply) => {
 
-server.register((app, _, done) => {
-  app.get("/health", async (request, reply) => {
-
-    console.log("GET /health")
-    return {
-      status: "ok",
-      uptime: process.uptime(),
-    }
-  })
-
-  app.get('/tracks', async (request, reply) => {
-    console.log("GET /tracks")
-
-    return [
-      {
-        id: 1,
-        title: 'Some track',
-      },
-    ]
-  })
-
-  done()
-
-}, {
-  prefix: API_PREFIX
+  console.log("GET /health")
+  return {
+    status: "ok",
+    uptime: process.uptime(),
+  }
 })
 
-server.listen({ port: parseInt(PORT), host: HOST, path: "/v1"  }, (err, address) => {
+
+server.get('/tracks', async (request, reply) => {
+  console.log("GET /tracks")
+
+  return [
+    {
+      id: 1,
+      title: 'Some track',
+    },
+  ]
+})
+
+server.listen({ port: parseInt(PORT), host: HOST  }, (err, address) => {
   if (err) {
     console.error(err)
     process.exit(1)
   }
 
-
-
-
-  console.log(`Server listening at ${address}`)
+  console.log(`Server listening at ${address} 🚀`)
 })

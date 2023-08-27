@@ -33,7 +33,7 @@ jobs:
           node-version: '18'
 
       - name: Generate task definition
-        run: npx -y ts-node --esm ./backend/create-type-definition.mts
+        run: npx -y ts-node --transpile-only --esm ./backend/create-type-definition.mts
         env:
           IMAGE_TAG: ${{ github.sha }}
 

@@ -36,7 +36,7 @@ resource "aws_route53_record" "trail_mate_api" {
   }
 }
 
-resource "aws_route53_record" "trail_mate_api_certificate_validation" {
+resource "aws_route53_record" "trail_mate_api_dns" {
   allow_overwrite = true
   name            = tolist(aws_acm_certificate.trail_mate_api_cert.domain_validation_options)[0].resource_record_name
   records         = [tolist(aws_acm_certificate.trail_mate_api_cert.domain_validation_options)[0].resource_record_value]
@@ -45,7 +45,7 @@ resource "aws_route53_record" "trail_mate_api_certificate_validation" {
   ttl             = 60
 }
 
-resource "aws_route53_record" "trail_mate_dns_certificate_validation" {
+resource "aws_route53_record" "trail_mate_dns" {
   allow_overwrite = true
   name            = tolist(aws_acm_certificate.trail_mate_cert.domain_validation_options)[0].resource_record_name
   records         = [tolist(aws_acm_certificate.trail_mate_cert.domain_validation_options)[0].resource_record_value]
@@ -56,10 +56,10 @@ resource "aws_route53_record" "trail_mate_dns_certificate_validation" {
 
 resource "aws_acm_certificate_validation" "trail_mate_api_validate" {
   certificate_arn         = aws_acm_certificate.trail_mate_api_cert.arn
-  validation_record_fqdns = [aws_route53_record.trail_mate_api_certificate_validation.fqdn]
+  validation_record_fqdns = [aws_route53_record.trail_mate_api_dns.fqdn]
 }
 
 resource "aws_acm_certificate_validation" "trail_mate_validate" {
   certificate_arn         = aws_acm_certificate.trail_mate_cert.arn
-  validation_record_fqdns = [aws_route53_record.trail_mate_dns_certificate_validation.fqdn]
+  validation_record_fqdns = [aws_route53_record.trail_mate_dns.fqdn]
 }

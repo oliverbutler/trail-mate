@@ -7,7 +7,7 @@ resource "aws_iam_policy" "github_actions_ecs_deploy" {
     Statement = [
       {
         Effect   = "Allow",
-        Action   = ["ecs:UpdateService", "ecs:RegisterTaskDefinition", "ecs:DescribeServices"],
+        Action   = ["ecs:UpdateService", "ecs:RegisterTaskDefinition", "ecs:DescribeServices", "ecr:GetAuthorizationToken"],
         Resource = "*"
       },
       {

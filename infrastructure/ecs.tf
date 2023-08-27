@@ -2,29 +2,6 @@ resource "aws_ecr_repository" "trail_mate_repository" {
   name = "trail-mate-repository"
 }
 
-resource "aws_ecr_repository_policy" "ecr_policy" {
-  repository = aws_ecr_repository.trail_mate_repository.name
-
-  policy = jsonencode({
-    Version   = "2008-10-17",
-    Statement = [
-      {
-        Sid       = "AllowECSExecutionRolePull",
-        Effect    = "Allow",
-        Principal = {
-          AWS = aws_iam_role.ecs_execution_role.arn
-        },
-        Action = [
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-          "ecr:BatchCheckLayerAvailability"
-        ]
-      }
-    ]
-  })
-}
-
-
 resource "aws_iam_role" "ecs_execution_role" {
   name = "trail-mate-ecs-execution-role"
 
@@ -111,7 +88,7 @@ resource "aws_ecs_service" "trail_mate_service" {
   network_configuration {
     subnets          = [aws_subnet.trail_mate_subnet_a.id, aws_subnet.trail_mate_subnet_b.id]
     security_groups  = [aws_security_group.trail_mate_sg.id]
-    assign_public_ip = false
+    assign_public_ip = true
   }
 
   load_balancer {

@@ -59,8 +59,6 @@ resource "aws_iam_policy" "github_actions_ecs_deploy" {
   })
 }
 
-data "aws_caller_identity" "current" {}
-
 resource "aws_iam_user" "github_actions_user" {
   name = "github-actions-user"
 }

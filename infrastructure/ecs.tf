@@ -15,10 +15,20 @@ resource "aws_iam_role" "ecs_execution_role" {
         },
         Effect = "Allow",
         Sid    = ""
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "secretsmanager:GetSecretValue"
+        ],
+        "Resource" : [
+          "arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:*"
+        ]
       }
     ]
   })
 }
+
 
 resource "aws_iam_role" "ecs_task_role" {
   name = "trail-mate-ecs-task-role"
@@ -95,6 +105,10 @@ resource "aws_ecs_service" "trail_mate_service" {
     target_group_arn = aws_lb_target_group.trail_mate_target_group.arn
     container_name   = "trail-mate-container"
     container_port   = 3000
+  }
+
+  lifecycle {
+    ignore_changes = [task_definition]
   }
 }
 

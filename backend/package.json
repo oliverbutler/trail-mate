@@ -7,8 +7,7 @@
     "dev": "tsx watch src",
     "build": "rm -rf dist && tsx esbuild.ts",
     "start": "node dist/index.js",
-    "migrations:generate": "drizzle-kit generate:mysql --schema=./src/schema.ts",
-    "migrations:run": "tsx ./src/migrate.ts"
+    "migrations:generate": "drizzle-kit generate:pg --schema=./src/schema.ts"
   },
   "keywords": [],
   "author": "Oliver Butler",
@@ -18,7 +17,7 @@
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.5",
     "fastify": "^4.21.0",
-    "mysql2": "^3.6.0",
+    "postgres": "^3.3.5",
     "tsx": "^3.12.7"
   },
   "devDependencies": {

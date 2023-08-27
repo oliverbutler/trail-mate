@@ -1,12 +1,12 @@
 {
   "version": "5",
-  "dialect": "mysql",
+  "dialect": "pg",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1693071229361,
-      "tag": "0000_fantastic_magma",
+      "when": 1693180055940,
+      "tag": "0000_volatile_tinkerer",
       "breakpoints": true
     }
   ]

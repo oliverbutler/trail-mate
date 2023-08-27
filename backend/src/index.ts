@@ -1,24 +1,23 @@
 import fastify from 'fastify';
-// import { migrate } from 'drizzle-orm/mysql2/migrator';
-// import { drizzle } from "drizzle-orm/mysql2";
-// import mysql from "mysql2";
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import dotenv from 'dotenv';
+import { Tracks } from './schema';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
 
 dotenv.config();
 
 const server = fastify();
 
-const { HOST = 'localhost', PORT = '3000' } = process.env;
+const {
+  HOST = 'localhost',
+  PORT = '3000',
+  DB_CREDENTIALS = '',
+  IMAGE_TAG = '',
+} = process.env;
 
-// const connection  = mysql.createConnection({
-//   host: process.env.DATABASE_HOST || '',
-//   user: process.env.DATABASE_USER || '',
-//   database: process.env.DATABASE_NAME || '',
-//   password: process.env.DATABASE_PASSWORD || '',
-//   port: parseInt(process.env.DATABASE_PORT || '3306')
-// });
-//
-// const db = drizzle(connection);
+const connection = postgres(DB_CREDENTIALS);
+const db = drizzle(connection);
 
 server.get('/health', async (request, reply) => {
   console.log('GET /health');
@@ -29,14 +28,33 @@ server.get('/health', async (request, reply) => {
 });
 
 server.get('/tracks', async (request, reply) => {
-  console.log('GET /tracks');
+  const tracks = await db.select().from(Tracks);
 
-  return [
-    {
-      id: 1,
-      title: 'Some track',
-    },
-  ];
+  return tracks;
+});
+
+server.post('/tracks', async (request, reply) => {
+  const { name } = request.body as { name: string };
+
+  await db.insert(Tracks).values({
+    name,
+  });
+
+  const tracks = await db.select().from(Tracks);
+
+  return tracks;
+});
+
+server.addHook('onReady', async () => {
+  console.log('Starting migration');
+  migrate(db, { migrationsFolder: './drizzle' })
+    .then(() => {
+      console.log('Migration complete');
+    })
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
 });
 
 server.listen({ port: parseInt(PORT), host: HOST }, (err, address) => {
@@ -45,5 +63,5 @@ server.listen({ port: parseInt(PORT), host: HOST }, (err, address) => {
     process.exit(1);
   }
 
-  console.log(`Server listening at ${address} 🚀`);
+  console.log(`Server listening at ${address} 🚀 (${IMAGE_TAG}) `);
 });

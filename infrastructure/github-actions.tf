@@ -3,16 +3,26 @@ resource "aws_iam_policy" "github_actions_ecs_deploy" {
   description = "Allows GitHub Actions to deploy to ECS and manage ECR repositories"
 
   policy = jsonencode({
-    Version = "2012-10-17",
+    Version   = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = ["ecs:UpdateService", "ecs:RegisterTaskDefinition", "ecs:DescribeServices", "ecr:GetAuthorizationToken"],
+        Effect = "Allow",
+        Action = [
+          "ecs:UpdateService", "ecs:RegisterTaskDefinition", "ecs:DescribeServices", "ecr:GetAuthorizationToken"
+        ],
         Resource = "*"
       },
       {
-        Effect   = "Allow",
-        Action   = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage", "ecr:BatchCheckLayerAvailability", "ecr:PutImage"],
+        Effect = "Allow",
+        Action = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:CompleteLayerUpload",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:PutImage"
+        ],
         Resource = aws_ecr_repository.trail_mate_repository.arn
       },
       {

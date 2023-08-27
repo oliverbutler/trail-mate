@@ -1,4 +1,4 @@
-import fastify from 'fastify'
+import fastify from 'fastify';
 // import { migrate } from 'drizzle-orm/mysql2/migrator';
 // import { drizzle } from "drizzle-orm/mysql2";
 // import mysql from "mysql2";
@@ -6,8 +6,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-
-const server = fastify()
+const server = fastify();
 
 const { HOST = 'localhost', PORT = '3000' } = process.env;
 
@@ -21,33 +20,30 @@ const { HOST = 'localhost', PORT = '3000' } = process.env;
 //
 // const db = drizzle(connection);
 
-
-server.get("/health", async (request, reply) => {
-
-  console.log("GET /health")
+server.get('/health', async (request, reply) => {
+  console.log('GET /health');
   return {
-    status: "ok",
+    status: 'ok',
     uptime: process.uptime(),
-  }
-})
-
+  };
+});
 
 server.get('/tracks', async (request, reply) => {
-  console.log("GET /tracks")
+  console.log('GET /tracks');
 
   return [
     {
       id: 1,
       title: 'Some track',
     },
-  ]
-})
+  ];
+});
 
-server.listen({ port: parseInt(PORT), host: HOST  }, (err, address) => {
+server.listen({ port: parseInt(PORT), host: HOST }, (err, address) => {
   if (err) {
-    console.error(err)
-    process.exit(1)
+    console.error(err);
+    process.exit(1);
   }
 
-  console.log(`Server listening at ${address} 🚀`)
-})
+  console.log(`Server listening at ${address} 🚀`);
+});

@@ -1,16 +1,38 @@
-
 resource "aws_ecr_repository" "trail_mate_repository" {
   name = "trail-mate-repository"
 }
+
+resource "aws_ecr_repository_policy" "ecr_policy" {
+  repository = aws_ecr_repository.trail_mate_repository.name
+
+  policy = jsonencode({
+    Version   = "2008-10-17",
+    Statement = [
+      {
+        Sid       = "AllowECSExecutionRolePull",
+        Effect    = "Allow",
+        Principal = {
+          AWS = aws_iam_role.ecs_execution_role.arn
+        },
+        Action = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability"
+        ]
+      }
+    ]
+  })
+}
+
 
 resource "aws_iam_role" "ecs_execution_role" {
   name = "trail-mate-ecs-execution-role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17",
+    Version   = "2012-10-17",
     Statement = [
       {
-        Action = "sts:AssumeRole",
+        Action    = "sts:AssumeRole",
         Principal = {
           Service = "ecs-tasks.amazonaws.com"
         },
@@ -25,10 +47,10 @@ resource "aws_iam_role" "ecs_task_role" {
   name = "trail-mate-ecs-task-role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17",
+    Version   = "2012-10-17",
     Statement = [
       {
-        Action = "sts:AssumeRole",
+        Action    = "sts:AssumeRole",
         Principal = {
           Service = "ecs-tasks.amazonaws.com"
         },
@@ -50,7 +72,7 @@ resource "aws_iam_policy" "ecs_logging_policy" {
   description = "Allows ECS tasks to write logs to CloudWatch."
 
   policy = jsonencode({
-    Version = "2012-10-17",
+    Version   = "2012-10-17",
     Statement = [
       {
         Action = [
@@ -81,11 +103,10 @@ resource "aws_ecs_cluster" "trail_mate_cluster" {
 
 
 resource "aws_ecs_service" "trail_mate_service" {
-  name            = "trail-mate-service"
-  cluster         = aws_ecs_cluster.trail_mate_cluster.id
-  task_definition = aws_ecs_task_definition.trail_mate_task.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
+  name          = "trail-mate-service"
+  cluster       = aws_ecs_cluster.trail_mate_cluster.id
+  desired_count = 1
+  launch_type   = "FARGATE"
 
   network_configuration {
     subnets          = [aws_subnet.trail_mate_subnet_a.id, aws_subnet.trail_mate_subnet_b.id]
@@ -104,35 +125,5 @@ resource "aws_cloudwatch_log_group" "trail_mate_logs" {
   name = "trail-mate-logs"
 }
 
-resource "aws_ecs_task_definition" "trail_mate_task" {
-  family                   = "trail-mate"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
-  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_task_role.arn
-
-  container_definitions = jsonencode([{
-    name  = "trail-mate-container"
-    image = "${aws_ecr_repository.trail_mate_repository.repository_url}:latest"
-    portMappings = [{
-      containerPort = 3000
-      hostPort      = 3000
-    }]
-    environment = [{
-      name  = "API_PREFIX",
-      value = "/prod"
-    }]
-    logConfiguration = {
-      logDriver = "awslogs"
-      options = {
-        "awslogs-group"         = aws_cloudwatch_log_group.trail_mate_logs.name,
-        "awslogs-region"        = "eu-west-2", # Replace with your region, e.g., "eu-west-2"
-        "awslogs-stream-prefix" = "trail-mate"
-      }
-    }
-  }])
-}
 
 

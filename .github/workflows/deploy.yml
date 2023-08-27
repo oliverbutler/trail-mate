@@ -55,4 +55,4 @@ jobs:
           task-definition: ./task-definition.json
           service: trail-mate-service
           cluster: trail-mate-cluster
-          wait-for-service-stability: true
+          wait-for-service-stability: false

@@ -18,7 +18,7 @@ server.register(app);
 if (environment.ENVIRONMENT !== "local") {
   server.addHook("onReady", async () => {
     console.log("Starting migration");
-    migrate(db, { migrationsFolder: "./api/assets/drizzle" })
+    migrate(db, { migrationsFolder: "./api/drizzle" })
       .then(() => {
         console.log("Migration complete");
       })

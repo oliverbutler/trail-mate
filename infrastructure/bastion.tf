@@ -39,14 +39,11 @@ resource "aws_instance" "tail_mate_bastion" {
   instance_type = "t4g.nano"
 
   key_name                    = aws_key_pair.bastion_key.key_name
-  security_groups             = [aws_security_group.trail_mate_bastion_sg.id]
+  vpc_security_group_ids      = [aws_security_group.trail_mate_bastion_sg.id]
   associate_public_ip_address = true
 
   subnet_id = aws_subnet.trail_mate_subnet_a.id
 
-  depends_on = [
-    aws_security_group.trail_mate_bastion_sg
-  ]
 
   tags = {
     Name = "Bastion"

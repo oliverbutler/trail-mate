@@ -7,9 +7,9 @@ import { environment } from "./env";
 
 const server = Fastify({
   logger: {
-    transport: {
-      target: environment.ENVIRONMENT === "local" ? "pino-pretty" : "pino"
-    }
+    transport: environment.ENVIRONMENT === "local" ? {
+      target: "pino-pretty"
+    } : undefined
   }
 });
 

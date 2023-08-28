@@ -18,7 +18,7 @@ COPY --from=build /usr/src/app/package*.json ./
 COPY --from=build /usr/src/app/dist ./dist
 
 # Move these for migrations to run
-COPY --from=build /usr/src/app/backend/drizzle ./drizzle
+COPY --from=build /usr/src/app/drizzle ./drizzle
 
 RUN npm install --omit=dev
 

@@ -9,6 +9,10 @@ resource "aws_db_instance" "trail_mate_db" {
   password = "password"
   db_name  = "trailmatedb"
 
+  publicly_accessible = true
+
+  ca_cert_identifier = "rds-ca-rsa2048-g1"
+
   identifier = "trail-mate-db"
 
   skip_final_snapshot = true
@@ -26,6 +30,13 @@ resource "aws_security_group" "trail_mate_db_sg" {
     to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.trail_mate_sg.id]
+  }
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["77.97.181.178/32"]
   }
 }
 

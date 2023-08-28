@@ -4,6 +4,7 @@ import postgres from 'postgres';
 import dotenv from 'dotenv';
 import { Tracks } from './schema';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import { readFileSync } from 'fs';
 
 dotenv.config();
 
@@ -16,7 +17,14 @@ const {
   IMAGE_TAG = '',
 } = process.env;
 
-const connection = postgres(DB_CREDENTIALS);
+const connection = postgres(DB_CREDENTIALS, {
+  ssl:
+    HOST !== 'localhost'
+      ? {
+          ca: readFileSync('./drizzle/global-bundle.pem').toString(),
+        }
+      : false,
+});
 const db = drizzle(connection);
 
 server.get('/health', async (request, reply) => {

@@ -9,7 +9,7 @@ resource "aws_db_instance" "trail_mate_db" {
   password = "password"
   db_name  = "trailmatedb"
 
-  publicly_accessible = true
+  publicly_accessible = false
 
   ca_cert_identifier = "rds-ca-rsa2048-g1"
 
@@ -30,6 +30,15 @@ resource "aws_security_group" "trail_mate_db_sg" {
     to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.trail_mate_sg.id]
+    description     = "Allow ECS to access RDS"
+  }
+
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.trail_mate_bastion_sg.id]
+    description     = "Allow bastion to access RDS"
   }
 
   ingress {
@@ -37,6 +46,7 @@ resource "aws_security_group" "trail_mate_db_sg" {
     to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["77.97.181.178/32"]
+    description = "Temporary external access"
   }
 }
 

@@ -30,6 +30,10 @@ const taskDefinition = {
           name: 'IMAGE_TAG',
           value: IMAGE_TAG,
         },
+        {
+          name: 'PORT',
+          value: 3000,
+        },
       ],
       secrets: [
         {

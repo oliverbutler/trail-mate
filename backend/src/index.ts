@@ -17,9 +17,12 @@ const {
 } = process.env;
 
 const connection = postgres(DB_CONNECTION_STRING, {
-  ssl: {
-    ca: readFileSync('./drizzle/global-bundle.pem').toString(),
-  },
+  ssl:
+    process.env.NODE_ENV === 'production'
+      ? {
+          ca: readFileSync('./drizzle/global-bundle.pem').toString(),
+        }
+      : false,
 });
 const db = drizzle(connection);
 
@@ -49,17 +52,19 @@ server.post('/tracks', async (request, reply) => {
   return tracks;
 });
 
-server.addHook('onReady', async () => {
-  console.log('Starting migration');
-  migrate(db, { migrationsFolder: './drizzle' })
-    .then(() => {
-      console.log('Migration complete');
-    })
-    .catch((err) => {
-      console.error(err);
-      process.exit(1);
-    });
-});
+if (process.env.NODE_ENV === 'production') {
+  server.addHook('onReady', async () => {
+    console.log('Starting migration');
+    migrate(db, { migrationsFolder: './drizzle' })
+      .then(() => {
+        console.log('Migration complete');
+      })
+      .catch((err) => {
+        console.error(err);
+        process.exit(1);
+      });
+  });
+}
 
 server.listen({ port: parseInt(PORT) }, (err, address) => {
   if (err) {

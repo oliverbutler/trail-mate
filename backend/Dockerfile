@@ -17,6 +17,9 @@ WORKDIR /usr/src/app
 COPY --from=build /usr/src/app/package*.json ./
 COPY --from=build /usr/src/app/dist ./dist
 
+# Move these for migrations to run
+COPY --from=build /usr/src/app/backend/drizzle ./drizzle
+
 RUN npm install --omit=dev
 
 ENV HOST=0.0.0.0 PORT=3000

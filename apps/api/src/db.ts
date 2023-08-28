@@ -7,7 +7,7 @@ const connection = postgres(environment.DB_CONNECTION_STRING, {
   ssl:
     environment.ENVIRONMENT !== "local"
       ? {
-        ca: readFileSync("./drizzle/global-bundle.pem").toString()
+        ca: readFileSync("./api/drizzle/global-bundle.pem").toString()
       }
       : false
 });

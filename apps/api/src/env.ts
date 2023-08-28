@@ -19,10 +19,7 @@ export type Environment = z.infer<typeof envSchema>;
 const environmentResult = envSchema.safeParse(process.env);
 
 if (!environmentResult.success) {
-  throw {
-    message: "Environment validation failed",
-    errors: environmentResult.error.errors
-  };
+  throw environmentResult.error.errors;
 }
 
 export const environment = environmentResult.data;

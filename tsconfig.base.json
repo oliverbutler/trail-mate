@@ -16,7 +16,9 @@
     "strict": true,
     "strictNullChecks": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@trail-mate/api-types": ["libs/api-types/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

@@ -13,17 +13,12 @@ const server = fastify();
 const {
   HOST = 'localhost',
   PORT = '3000',
-  DB_CREDENTIALS = '',
+  DB_CONNECTION_STRING = '',
   IMAGE_TAG = '',
 } = process.env;
 
-const connection = postgres(DB_CREDENTIALS, {
-  ssl:
-    HOST !== 'localhost'
-      ? {
-          ca: readFileSync('./drizzle/global-bundle.pem').toString(),
-        }
-      : false,
+const connection = postgres(DB_CONNECTION_STRING, {
+  ssl: false,
 });
 const db = drizzle(connection);
 

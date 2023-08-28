@@ -33,9 +33,9 @@ const taskDefinition = {
       ],
       secrets: [
         {
-          name: 'DB_CREDENTIALS',
+          name: 'DB_CONNECTION_STRING',
           valueFrom:
-            'arn:aws:secretsmanager:eu-west-2:123809683522:secret:db_credentials-H6zsVl',
+            'arn:aws:secretsmanager:eu-west-2:123809683522:secret:db_connection_string-ykGmSc',
         },
       ],
       logConfiguration: {

@@ -194,6 +194,8 @@ resource "aws_ecs_service" "trail_mate_service" {
   desired_count = 1
   launch_type   = "FARGATE"
 
+  task_definition = aws_ecs_task_definition.trail_mate_task.arn
+
   network_configuration {
     subnets          = [aws_subnet.trail_mate_subnet_a.id, aws_subnet.trail_mate_subnet_b.id]
     security_groups  = [aws_security_group.trail_mate_sg.id]
@@ -244,4 +246,36 @@ resource "aws_security_group" "trail_mate_sg" {
   }
 }
 
+
+resource "aws_ecs_task_definition" "trail_mate_task" {
+  family                   = "trail-mate"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+
+  container_definitions = jsonencode([
+    {
+      name         = "trail-mate-container"
+      image        = "${aws_ecr_repository.trail_mate_repository.repository_url}:latest"
+      portMappings = [
+        {
+          containerPort = 3000
+          hostPort      = 3000
+        }
+      ]
+      environment      = []
+      logConfiguration = {
+        logDriver = "awslogs"
+        options   = {
+          "awslogs-group"         = aws_cloudwatch_log_group.trail_mate_logs.name,
+          "awslogs-region"        = "eu-west-2", # Replace with your region, e.g., "eu-west-2"
+          "awslogs-stream-prefix" = "trail-mate"
+        }
+      }
+    }
+  ])
+}
 

@@ -13,14 +13,6 @@ provider "aws" {
   region = "eu-west-2"
 }
 
-resource "aws_s3_bucket" "bucket" {
-  bucket = "trail-mate"
-}
-
-resource "aws_s3_bucket" "logs" {
-  bucket = "trail-mate-logs"
-}
-
 resource "aws_budgets_budget" "warning" {
   budget_type       = "COST"
   limit_amount      = "10"

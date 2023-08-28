@@ -32,7 +32,11 @@ const taskDefinition = {
         },
         {
           name: 'PORT',
-          value: 3000,
+          value: '3000',
+        },
+        {
+          name: 'HOST',
+          value: '0.0.0.0',
         },
       ],
       secrets: [
@@ -56,5 +60,5 @@ const taskDefinition = {
 
 writeFileSync(
   './task-definition.json',
-  JSON.stringify(taskDefinition, null, 2),
+  JSON.stringify(taskDefinition, null, 2)
 );

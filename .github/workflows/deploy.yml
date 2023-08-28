@@ -14,42 +14,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials 🔐
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
 
-      - name: Login to Amazon ECR
+      - name: Login to Amazon ECR 🔐
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         with:
           aws-region: eu-west-2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Setup Node.js 🍀
+        uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
 
-      - name: Generate task definition
+      - name: Install dependencies 🥵
+        run: npm install
+
+      - name: Generate task definition 🏗 ️
         run: npx -y ts-node --logError --esm ./backend/create-task-definition.mts
         env:
           IMAGE_TAG: ${{ github.sha }}
 
-      - name: Setup Docker buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Build Docker Image 🐳
+        run: npm exec nx run api:docker-build -- -t ${{ steps.login-ecr.outputs.registry }}/trail-mate-repository:${{ github.sha }}
 
-      - name: Build, tag, and push image to Amazon ECR
-        uses: docker/build-push-action@v4
-        with:
-          context: "{{defaultContext}}:backend"
-          push: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/trail-mate-repository:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Push Docker image to Amazon ECR 📦
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/trail-mate-repository:${{ github.sha }}
 
-      - name: Deploy to Amazon ECS
+      - name: Deploy to Amazon ECS 🚀
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ./task-definition.json

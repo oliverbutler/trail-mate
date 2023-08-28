@@ -2,7 +2,7 @@ import Fastify, { FastifyInstance } from "fastify";
 import { app } from "./app";
 import cuid from "cuid";
 
-describe("GET /", () => {
+describe("App Test", () => {
   let server: FastifyInstance;
 
   beforeEach(() => {

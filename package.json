@@ -19,7 +19,9 @@
     "drizzle-orm": "^0.28.5",
     "fastify": "^4.21.0",
     "postgres": "^3.3.5",
-    "zod": "^3.22.2"
+    "zod": "^3.22.2",
+    "@ts-rest/core": "^3.28.0",
+    "@ts-rest/fastify": "^3.28.0"
   },
   "devDependencies": {
     "drizzle-kit": "^0.19.13",

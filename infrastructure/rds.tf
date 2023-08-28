@@ -13,8 +13,21 @@ resource "aws_db_instance" "trail_mate_db" {
 
   skip_final_snapshot = true
 
-  vpc_security_group_ids = [aws_security_group.trail_mate_sg.id]
+  vpc_security_group_ids = [aws_security_group.trail_mate_db_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.trail_mate_db_subnet_group.name
+}
+
+resource "aws_security_group" "trail_mate_db_sg" {
+  vpc_id = aws_vpc.trail_mate_vpc.id
+  name   = "trail-mate-db-sg"
+
+  #  Allow traffic from within the VPC
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.trail_mate_vpc.cidr_block]
+  }
 }
 
 resource "aws_db_subnet_group" "trail_mate_db_subnet_group" {

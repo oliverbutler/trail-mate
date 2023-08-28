@@ -15,14 +15,25 @@ resource "aws_iam_role" "ecs_execution_role" {
         },
         Effect = "Allow",
         Sid    = ""
-      },
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "ecs_execution_secrets_access" {
+  name = "trail-mate-ecs-execution-secrets-access"
+  role = aws_iam_role.ecs_execution_role.id
+
+  policy = jsonencode({
+    Version   = "2012-10-17",
+    Statement = [
       {
-        "Effect" : "Allow",
-        "Action" : [
+        Effect = "Allow",
+        Action = [
           "secretsmanager:GetSecretValue"
         ],
-        "Resource" : [
-          "arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:*"
+        Resource = [
+          "arn:aws:secretsmanager:eu-west-2:${data.aws_caller_identity.current.account_id}:secret:*"
         ]
       }
     ]

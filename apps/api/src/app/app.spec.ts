@@ -27,7 +27,7 @@ describe("App Test", () => {
     }
   });
 
-  beforeEach(() => {
+  beforeAll(() => {
     server = Fastify();
     server.register(app);
   });

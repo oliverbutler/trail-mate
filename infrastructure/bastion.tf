@@ -3,9 +3,11 @@ resource "aws_key_pair" "bastion_key" {
   public_key = file("~/.ssh/olly.pub")
 }
 
-resource "aws_security_group" "bastion_sg" {
-  name        = "bastion_sg"
+resource "aws_security_group" "trail_mate_bastion_sg" {
+  name        = "trail-mate-bastion-sg"
   description = "Bastion Security Group"
+
+  vpc_id = aws_vpc.trail_mate_vpc.id
 
   # SSH access
   ingress {
@@ -32,21 +34,27 @@ resource "aws_security_group" "bastion_sg" {
   }
 }
 
-resource "aws_instance" "bastion" {
+resource "aws_instance" "tail_mate_bastion" {
   ami           = "ami-062ec2beae7c79c8e"
   instance_type = "t4g.nano"
 
   key_name                    = aws_key_pair.bastion_key.key_name
-  security_groups             = [aws_security_group.bastion_sg.name]
+  security_groups             = [aws_security_group.trail_mate_bastion_sg.id]
   associate_public_ip_address = true
 
+  subnet_id = aws_subnet.trail_mate_subnet_a.id
+
+  depends_on = [
+    aws_security_group.trail_mate_bastion_sg
+  ]
+
   tags = {
-    Name = "Bastion Host"
+    Name = "Bastion"
   }
 }
 
 resource "aws_eip" "bastion_eip" {
-  instance = aws_instance.bastion.id
+  instance = aws_instance.tail_mate_bastion.id
 }
 
 output "bastion_ip" {

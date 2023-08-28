@@ -11,14 +11,15 @@ dotenv.config();
 const server = fastify();
 
 const {
-  HOST = 'localhost',
   PORT = '3000',
   DB_CONNECTION_STRING = '',
   IMAGE_TAG = '',
 } = process.env;
 
 const connection = postgres(DB_CONNECTION_STRING, {
-  ssl: false,
+  ssl: {
+    ca: readFileSync('./drizzle/global-bundle.pem').toString(),
+  },
 });
 const db = drizzle(connection);
 
@@ -60,7 +61,7 @@ server.addHook('onReady', async () => {
     });
 });
 
-server.listen({ port: parseInt(PORT), host: HOST }, (err, address) => {
+server.listen({ port: parseInt(PORT) }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);

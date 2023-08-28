@@ -2,7 +2,10 @@
   "name": "@trail-mate/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "act": "act --secret-file .env --container-architecture linux/amd64"
+  },
+  "nx": {},
   "private": true,
   "dependencies": {
     "@fastify/autoload": "~5.7.1",

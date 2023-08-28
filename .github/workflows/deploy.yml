@@ -37,7 +37,7 @@ jobs:
         run: npm install
 
       - name: Generate task definition 🏗 ️
-        run: npx -y ts-node --logError --esm ./backend/create-task-definition.mts
+        run: npm exec nx run api:generate-task-definition
         env:
           IMAGE_TAG: ${{ github.sha }}
 

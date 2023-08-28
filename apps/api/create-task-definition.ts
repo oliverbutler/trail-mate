@@ -31,6 +31,10 @@ const taskDefinition = {
           value: IMAGE_TAG
         },
         {
+          name: "ENVIRONMENT",
+          value: "prod"
+        },
+        {
           name: "PORT",
           value: "3000"
         },

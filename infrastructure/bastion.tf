@@ -9,21 +9,22 @@ resource "aws_security_group" "trail_mate_bastion_sg" {
 
   vpc_id = aws_vpc.trail_mate_vpc.id
 
-  # SSH access
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [
-      "154.57.233.120/32" # Family's Home
-    ]
-  }
+  # SSH access if you want to connect to the bastion host directly
+  #  ingress {
+  #    from_port   = 22
+  #    to_port     = 22
+  #    protocol    = "tcp"
+  #    cidr_blocks = [
+  #      "154.57.233.120/32"
+  #    ]
+  #  }
 
   ingress {
     from_port   = 41641
     to_port     = 41641
     protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Tailscale"
   }
 
   egress {

@@ -40,14 +40,6 @@ resource "aws_security_group" "trail_mate_db_sg" {
     security_groups = [aws_security_group.trail_mate_bastion_sg.id]
     description     = "Allow bastion to access RDS"
   }
-
-  ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["77.97.181.178/32"]
-    description = "Temporary external access"
-  }
 }
 
 resource "aws_db_subnet_group" "trail_mate_db_subnet_group" {

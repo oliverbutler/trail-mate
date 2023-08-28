@@ -1,22 +1,14 @@
 import fastify from 'fastify';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import dotenv from 'dotenv';
 import { Tracks } from './schema';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { readFileSync } from 'fs';
-
-dotenv.config();
+import { environment } from './env';
 
 const server = fastify();
 
-const {
-  PORT = '3000',
-  DB_CONNECTION_STRING = '',
-  IMAGE_TAG = '',
-} = process.env;
-
-const connection = postgres(DB_CONNECTION_STRING, {
+const connection = postgres(environment.DB_CONNECTION_STRING, {
   ssl:
     process.env.NODE_ENV === 'production'
       ? {
@@ -66,11 +58,16 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-server.listen({ port: parseInt(PORT) }, (err, address) => {
-  if (err) {
-    console.error(err);
-    process.exit(1);
-  }
+server.listen(
+  { port: environment.PORT, host: environment.HOST },
+  (err, address) => {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
 
-  console.log(`Server listening at ${address} 🚀 (${IMAGE_TAG}) `);
-});
+    console.log(
+      `Server listening at ${address} 🚀 (${environment.IMAGE_TAG}) `,
+    );
+  },
+);

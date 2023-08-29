@@ -1,0 +1,5 @@
+name: infrastructure
+runtime: nodejs
+config:
+  aws:region:
+    value: eu-west-2

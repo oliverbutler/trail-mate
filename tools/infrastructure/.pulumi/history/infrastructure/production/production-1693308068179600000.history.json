@@ -1,0 +1,33 @@
+{
+    "kind": "update",
+    "startTime": 1693308065,
+    "message": "feat: spike pulumi",
+    "environment": {
+        "exec.kind": "cli",
+        "git.author": "Oliver Butler",
+        "git.author.email": "dev@oliverbutler.uk",
+        "git.committer": "Oliver Butler",
+        "git.committer.email": "dev@oliverbutler.uk",
+        "git.dirty": "true",
+        "git.head": "ec17fd19907424b875477255476a40db6f001f32",
+        "git.headName": "refs/heads/main",
+        "pulumi.arch": "arm64",
+        "pulumi.env.PULUMI_CONFIG_PASSPHRASE": "set",
+        "pulumi.os": "darwin",
+        "pulumi.version": "v3.79.0",
+        "updatePlan": "false",
+        "vcs.kind": "github.com",
+        "vcs.owner": "oliverbutler",
+        "vcs.repo": "trail-mate",
+        "vcs.root": "tools/infrastructure"
+    },
+    "config": {
+        "aws:region": "eu-west-2"
+    },
+    "version": 0,
+    "result": "succeeded",
+    "endTime": 1693308068,
+    "resourceChanges": {
+        "same": 39
+    }
+}

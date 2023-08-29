@@ -4,15 +4,12 @@ import * as std from "@pulumi/std";
 
 
 const warning = new aws.budgets.Budget("warning", {
-    budgetType: "COST",
-    limitAmount: "10",
-    limitUnit: "USD",
-    timePeriodStart: "2023-08-01_00:00",
-    timeUnit: "MONTHLY"
-  },
-  {
-    import: "123809683522:terraform-20230828154827158500000004"
-  });
+  budgetType: "COST",
+  limitAmount: "10",
+  limitUnit: "USD",
+  timePeriodStart: "2023-08-01_00:00",
+  timeUnit: "MONTHLY"
+});
 
 const config = new pulumi.Config();
 const environment = config.get("environment") || "prod";
@@ -21,7 +18,7 @@ const current = aws.getCallerIdentityOutput({});
 const dbConnectionString = new aws.secretsmanager.Secret("dbConnectionString", {
   name: "db_connection_string",
   description: "DB credentials as JSON"
-}, { import: "db_connection_string" });
+});
 
 const trailMateVpc = new aws.ec2.Vpc("trailMateVpc", {
   cidrBlock: "10.8.0.0/16",
@@ -30,7 +27,7 @@ const trailMateVpc = new aws.ec2.Vpc("trailMateVpc", {
   tags: {
     Name: "trail-mate-vpc"
   }
-}, { import: "vpc-050a1187b35a5a79d" });
+});
 
 const trailMateSubnetA = new aws.ec2.Subnet("trailMateSubnetA", {
   vpcId: trailMateVpc.id,
@@ -40,7 +37,7 @@ const trailMateSubnetA = new aws.ec2.Subnet("trailMateSubnetA", {
   tags: {
     Name: "trail-mate-subnet-a"
   }
-}, { import: "subnet-02821ef3edaee89bc" });
+});
 
 const trailMateSubnetB = new aws.ec2.Subnet("trailMateSubnetB", {
   vpcId: trailMateVpc.id,
@@ -50,11 +47,9 @@ const trailMateSubnetB = new aws.ec2.Subnet("trailMateSubnetB", {
   tags: {
     Name: "trail-mate-subnet-b"
   }
-}, {
-  import: "subnet-0d4e230c1f69b6eaa"
 });
 
-const trailMateIgw = new aws.ec2.InternetGateway("trailMateIgw", { vpcId: trailMateVpc.id }, { import: "igw-0b34dc9aa2aca0d09" });
+const trailMateIgw = new aws.ec2.InternetGateway("trailMateIgw", { vpcId: trailMateVpc.id });
 
 const trailMateRt = new aws.ec2.RouteTable("trailMateRt", {
   vpcId: trailMateVpc.id,
@@ -65,7 +60,7 @@ const trailMateRt = new aws.ec2.RouteTable("trailMateRt", {
   tags: {
     Name: "trail-mate-route-table"
   }
-}, { import: "rtb-0ac603f7b3cad3b5c" });
+});
 
 const trailMateSubnetAAssociation = new aws.ec2.RouteTableAssociation("trailMateSubnetAAssociation", {
   subnetId: trailMateSubnetA.id,
@@ -101,7 +96,7 @@ const trailMateBastionSg = new aws.ec2.SecurityGroup("trailMateBastionSg", {
     protocol: "-1",
     cidrBlocks: ["0.0.0.0/0"]
   }]
-}, { import: "sg-04154380c28df8290" });
+});
 
 const tailMateBastion = new aws.ec2.Instance("tailMateBastion", {
   ami: "ami-062ec2beae7c79c8e",
@@ -113,13 +108,13 @@ const tailMateBastion = new aws.ec2.Instance("tailMateBastion", {
   tags: {
     Name: "Bastion"
   }
-}, { import: "i-0d27b61a602f5b83c" });
+});
 
-const bastionEip = new aws.ec2.Eip("bastionEip", { instance: tailMateBastion.id }, { import: "eipalloc-0388364a1eefdfcdc" });
+const bastionEip = new aws.ec2.Eip("bastionEip", { instance: tailMateBastion.id });
 
 export const bastionIp = bastionEip.publicIp;
 
-const trailMateRepository = new aws.ecr.Repository("trailMateRepository", { name: "trail-mate-repository" }, { import: "trail-mate-repository" });
+const trailMateRepository = new aws.ecr.Repository("trailMateRepository", { name: "trail-mate-repository" });
 
 const trailMateAlbSg = new aws.ec2.SecurityGroup("trailMateAlbSg", {
   name: "trail-mate-alb-sg",
@@ -147,7 +142,7 @@ const trailMateAlbSg = new aws.ec2.SecurityGroup("trailMateAlbSg", {
     protocol: "-1",
     cidrBlocks: ["0.0.0.0/0"]
   }]
-}, { import: "sg-0dc5fae99875a5ff0" });
+});
 
 const trailMateAlb = new aws.lb.LoadBalancer("trailMateAlb", {
   name: "trail-mate-lb",
@@ -158,7 +153,7 @@ const trailMateAlb = new aws.lb.LoadBalancer("trailMateAlb", {
     trailMateSubnetA.id,
     trailMateSubnetB.id
   ]
-}, { import: "arn:aws:elasticloadbalancing:eu-west-2:123809683522:loadbalancer/app/trail-mate-lb/c0e8d1d5f6d742f3" });
+});
 
 // Redirect HTTP to HTTPS for the LB
 const trailMateListener = new aws.lb.Listener("trailMateListener", {
@@ -191,14 +186,14 @@ const trailMateTargetGroup = new aws.lb.TargetGroup("trailMateTargetGroup", {
     unhealthyThreshold: 3,
     matcher: "200-299"
   }
-}, { import: "arn:aws:elasticloadbalancing:eu-west-2:123809683522:targetgroup/trail-mate-target-group/7fc116494b361d13" });
+});
 
 const rootDomainName = config.get("rootDomainName") || "trail-mate.com";
 
 const trailMateApiCert = new aws.acm.Certificate("trailMateApiCert", {
   domainName: `api.${rootDomainName}`,
   validationMethod: "DNS"
-}, { import: "arn:aws:acm:eu-west-2:123809683522:certificate/6230c1cc-c083-480d-b728-d7997f668654" });
+});
 
 const httpsListener = new aws.lb.Listener("httpsListener", {
   loadBalancerArn: trailMateAlb.arn,
@@ -225,8 +220,6 @@ const ecsExecutionRole = new aws.iam.Role("ecsExecutionRole", {
       Sid: ""
     }]
   })
-}, {
-  import: "trail-mate-ecs-execution-role"
 });
 
 const ecsExecutionSecretsAccess = new aws.iam.RolePolicy("ecsExecutionSecretsAccess", {
@@ -240,8 +233,6 @@ const ecsExecutionSecretsAccess = new aws.iam.RolePolicy("ecsExecutionSecretsAcc
       Resource: [`arn:aws:secretsmanager:eu-west-2:${current.accountId}:secret:*`]
     }]
   }))
-}, {
-  import: "trail-mate-ecs-execution-role:trail-mate-ecs-execution-secrets-access"
 });
 
 const ecsTaskRole = new aws.iam.Role("ecsTaskRole", {
@@ -257,17 +248,15 @@ const ecsTaskRole = new aws.iam.Role("ecsTaskRole", {
         Sid: ""
       }]
     })
-  },
-  {
-    import: "trail-mate-ecs-task-role"
-  });
+  }
+);
 
 const ecsExecutionRolePolicyAttachment = new aws.iam.RolePolicyAttachment("ecsExecutionRolePolicyAttachment", {
   role: ecsExecutionRole.name,
   policyArn: "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 });
 
-const trailMateLogs = new aws.cloudwatch.LogGroup("trailMateLogs", { name: "trail-mate-logs" }, { import: "trail-mate-logs" });
+const trailMateLogs = new aws.cloudwatch.LogGroup("trailMateLogs", { name: "trail-mate-logs" });
 
 const ecsLoggingPolicy = new aws.iam.Policy("ecsLoggingPolicy", {
   name: "trail-mate-ecs-logging-policy",
@@ -283,7 +272,7 @@ const ecsLoggingPolicy = new aws.iam.Policy("ecsLoggingPolicy", {
       resource: arn
     }]
   }))
-}, { import: "arn:aws:iam::123809683522:policy/trail-mate-ecs-logging-policy" });
+});
 
 const ecsExecutionLoggingPolicyAttachment = new aws.iam.RolePolicyAttachment("ecsExecutionLoggingPolicyAttachment", {
   role: ecsExecutionRole.name,
@@ -320,7 +309,7 @@ const trailMateSg = new aws.ec2.SecurityGroup("trailMateSg", {
   tags: {
     Name: "trail-mate-sg"
   }
-}, { import: "sg-0d5f32da6a53487b6" });
+});
 
 const trailMateService = new aws.ecs.Service("trailMateService", {
   name: "trail-mate-service",
@@ -399,11 +388,9 @@ const githubActionsEcsDeploy = new aws.iam.Policy("githubActionsEcsDeploy", {
       }
     ]
   }))
-}, {
-  import: "arn:aws:iam::123809683522:policy/GitHubActionsECSDeployPolicy"
 });
 
-const githubActionsUser = new aws.iam.User("githubActionsUser", { name: "github-actions-user" }, { import: "github-actions-user" });
+const githubActionsUser = new aws.iam.User("githubActionsUser", { name: "github-actions-user" });
 
 const githubActionsUserEcsDeploy = new aws.iam.UserPolicyAttachment("githubActionsUserEcsDeploy", {
   user: githubActionsUser.name,
@@ -430,7 +417,7 @@ const trailMateDbSg = new aws.ec2.SecurityGroup("trailMateDbSg", {
       description: "Allow bastion to access RDS"
     }
   ]
-}, { import: "sg-050b59f602daa7083" });
+});
 
 const trailMateDbSubnetGroup = new aws.rds.SubnetGroup("trailMateDbSubnetGroup", {
   name: "trail-mate-db-subnet-group",
@@ -439,7 +426,7 @@ const trailMateDbSubnetGroup = new aws.rds.SubnetGroup("trailMateDbSubnetGroup",
     trailMateSubnetA.id,
     trailMateSubnetB.id
   ]
-}, { import: "trail-mate-db-subnet-group" });
+});
 
 const trailMateDb = new aws.rds.Instance("trailMateDb", {
   allocatedStorage: 20,
@@ -455,16 +442,16 @@ const trailMateDb = new aws.rds.Instance("trailMateDb", {
   skipFinalSnapshot: true,
   vpcSecurityGroupIds: [trailMateDbSg.id],
   dbSubnetGroupName: trailMateDbSubnetGroup.name
-}, { import: "trail-mate-db" });
+});
 
 export const dbEndpoint = trailMateDb.endpoint;
 
-const trailMateZone = new aws.route53.Zone("trailMateZone", { name: rootDomainName }, { import: "Z08930733J17FWLHBXA6D" });
+const trailMateZone = new aws.route53.Zone("trailMateZone", { name: rootDomainName });
 
 const trailMateCert = new aws.acm.Certificate("trailMateCert", {
   domainName: rootDomainName,
   validationMethod: "DNS"
-}, { import: "arn:aws:acm:eu-west-2:123809683522:certificate/9f0bc6cf-e9dd-4229-a0e0-4590b4dde0c0" });
+});
 
 // Point `api.trail-mate.com` to the ALB for API traffic
 const trailMateApi = new aws.route53.Record("trailMateApi", {
@@ -476,7 +463,5 @@ const trailMateApi = new aws.route53.Record("trailMateApi", {
     zoneId: trailMateAlb.zoneId,
     evaluateTargetHealth: false
   }]
-}, {
-  import: "Z08930733J17FWLHBXA6D_api.trail-mate.com_A"
 });
 

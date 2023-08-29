@@ -78,3 +78,21 @@ override.tf.json
 .terraformrc
 terraform.rc
 /.env
+
+# Expo
+node_modules/
+.expo/
+.yarn/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+cache/
+
+
+apps/app-e2e/artifacts

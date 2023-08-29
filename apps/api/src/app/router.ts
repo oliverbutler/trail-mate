@@ -6,6 +6,16 @@ import { Tracks } from './schema';
 export const s = initServer();
 
 const router = s.router(contract, {
+  auth: {
+    register: async ({ body }) => {
+      return {
+        status: 200,
+        body: {
+          id: '',
+        },
+      };
+    },
+  },
   getHealth: async ({}) => {
     return {
       status: 200,

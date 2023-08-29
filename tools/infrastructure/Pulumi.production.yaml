@@ -1,1 +1,4 @@
 encryptionsalt: v1:vogUirDD9Cs=:v1:MC5HzIxfjLSFKpVC:5iewjhTuN6Ri+BoxwgfNPH8i1q4eZg==
+config:
+  infrastructure:dbConnectionString:
+    secure: v1:l0vjOZRewXQFO37h:JZEqksCg/IK/RtEpzLQRmT1jkM8aukTi3BWF3PZUbmtzOaCTeynli4OnyWRkxXitSmpbnoY9EXdNgUR/3GUfLsyAfOsv0p9e70O8Fqdn/ZNKnWfNQeA72+N565Dt2CEKaJIkR/h9bCIAB4DDOjOn9vUeob4L5A0=

@@ -4,6 +4,8 @@ import "./env";
 import { db } from "./db";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { environment } from "./env";
+import cron from "node-cron";
+import { consumeEvents } from "./queue-consumer";
 
 const server = Fastify({
   logger: {
@@ -14,6 +16,11 @@ const server = Fastify({
 });
 
 server.register(app);
+
+const EVERY_SECOND = "* * * * * *";
+
+cron.schedule(EVERY_SECOND, consumeEvents);
+
 
 if (environment.ENVIRONMENT !== "local") {
   server.addHook("onReady", async () => {

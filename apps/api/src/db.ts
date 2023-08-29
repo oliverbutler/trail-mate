@@ -11,4 +11,5 @@ const connection = postgres(environment.DB_CONNECTION_STRING, {
       }
       : false
 });
+
 export const db = drizzle(connection);

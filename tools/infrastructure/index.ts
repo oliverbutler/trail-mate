@@ -2,6 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as std from "@pulumi/std";
 
+const cfg = new pulumi.Config();
 
 const warning = new aws.budgets.Budget("warning", {
   budgetType: "COST",
@@ -12,12 +13,16 @@ const warning = new aws.budgets.Budget("warning", {
 });
 
 const config = new pulumi.Config();
-const environment = config.get("environment") || "prod";
 const current = aws.getCallerIdentityOutput({});
 
 const dbConnectionString = new aws.secretsmanager.Secret("dbConnectionString", {
   name: "db_connection_string",
   description: "DB credentials as JSON"
+});
+
+const dbConnectionStringSecretVersion = new aws.secretsmanager.SecretVersion("dbConnectionStringSecretVersion", {
+  secretId: dbConnectionString.id,
+  secretString: cfg.requireSecret("dbConnectionString")
 });
 
 const trailMateVpc = new aws.ec2.Vpc("trailMateVpc", {

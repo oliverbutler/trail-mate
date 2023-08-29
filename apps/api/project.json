@@ -90,6 +90,15 @@
     },
     "generate-task-definition": {
       "command": "ts-node apps/api/create-task-definition.ts"
+    },
+    "migrations-generate": {
+      "command": "pnpm drizzle-kit generate:pg --schema=./apps/api/src/app/schema.ts --out=./apps/api/drizzle"
+    },
+    "migrations-create-empty": {
+      "command": "pnpm drizzle-kit generate:pg --schema=./apps/api/src/app/schema.ts --out=./apps/api/drizzle --custom"
+    },
+    "migrations-deploy": {
+      "command": "pnpm drizzle-kit push:pg --schema=./apps/api/src/app/schema.ts --connectionString=postgresql://user:userpassword@localhost:5432/trailmate"
     }
   },
   "tags": []

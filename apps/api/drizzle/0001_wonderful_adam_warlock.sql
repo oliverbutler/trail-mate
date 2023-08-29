@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS "queue" (
 	"status" "status" DEFAULT 'pending' NOT NULL,
 	"try_count" integer DEFAULT 0 NOT NULL,
 	"max_tries" integer DEFAULT 5 NOT NULL,
-	"params" jsonb DEFAULT '{}'::jsonb NOT NULL,
+	"payload" jsonb DEFAULT '{}'::jsonb NOT NULL,
 	"create_time" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"update_time" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
 );

@@ -8,7 +8,7 @@ export const consumeEvents = async () => {
       .select()
       .from(Queue)
       .where(eq(Queue.status, 'pending'))
-      .limit(10)
+      .limit(100)
       .for('update', {
         skipLocked: true,
       })
@@ -23,7 +23,7 @@ export const consumeEvents = async () => {
           .set({
             tryCount: sql`${Queue.tryCount} + 1`,
             updateTime: new Date(),
-            status: e.tryCount >= e.maxTries ? 'failed' : 'pending',
+            status: e.tryCount >= e.maxTries ? 'failed' : 'completed',
           })
           .where(eq(Queue.id, e.id))
           .execute();

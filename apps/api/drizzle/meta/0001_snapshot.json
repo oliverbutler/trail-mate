@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "ebbc7801-6b8d-47a7-8eca-ea95fa24bd7b",
+  "id": "8dab9365-c1da-43a2-8949-f690ddf2ea4b",
   "prevId": "f6493f73-a901-494f-b1ca-e5e8af1e5e3e",
   "tables": {
     "queue": {
@@ -35,8 +35,8 @@
           "notNull": true,
           "default": 5
         },
-        "params": {
-          "name": "params",
+        "payload": {
+          "name": "payload",
           "type": "jsonb",
           "primaryKey": false,
           "notNull": true,

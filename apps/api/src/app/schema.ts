@@ -30,7 +30,7 @@ export const Queue = pgTable('queue', {
     .default('pending' as const),
   tryCount: integer('try_count').notNull().default(0),
   maxTries: integer('max_tries').notNull().default(5),
-  params: jsonb('params').notNull().default({}),
+  payload: jsonb('payload').notNull().default({}),
   createTime: timestamp('create_time')
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),

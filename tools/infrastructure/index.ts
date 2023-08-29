@@ -465,3 +465,9 @@ const trailMateApi = new aws.route53.Record("trailMateApi", {
   }]
 });
 
+/**
+ * Used for pulumis state
+ */
+const pulumiStateBucket = new aws.s3.Bucket("pulumiStateBucket", {
+  bucket: "trail-mate-pulumi-state"
+});

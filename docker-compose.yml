@@ -5,9 +5,9 @@ services:
     image: postgres:13
     container_name: trail-mate-db
     environment:
-      POSTGRES_DB: trailmate
-      POSTGRES_USER: auth
-      POSTGRES_PASSWORD: userpassword
+      POSTGRES_DB: trailmatedb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:

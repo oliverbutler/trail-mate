@@ -1,17 +1,18 @@
-import { z } from "zod";
-import dotenv from "dotenv";
+import { z } from 'zod';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
 export const envSchema = z.object({
   PORT: z
     .string()
-    .default("3000")
+    .default('3000')
     .transform((val) => parseInt(val, 10)),
   DB_CONNECTION_STRING: z.string(),
   IMAGE_TAG: z.string().optional(),
-  HOST: z.string().default("localhost"),
-  ENVIRONMENT: z.enum(["local", "prod"]).default("local")
+  HOST: z.string().default('localhost'),
+  ENVIRONMENT: z.enum(['local', 'prod']).default('local'),
+  JWT_SECRET: z.string(),
 });
 
 export type Environment = z.infer<typeof envSchema>;

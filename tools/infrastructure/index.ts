@@ -28,6 +28,19 @@ const dbConnectionStringSecretVersion = new aws.secretsmanager.SecretVersion(
   }
 );
 
+const jwtSecret = new aws.secretsmanager.Secret('jwtSecretString', {
+  name: 'jwt_secret',
+  description: 'JWT secret',
+});
+
+const jwtSecretSecretVersion = new aws.secretsmanager.SecretVersion(
+  'jwtSecretSecretVersion',
+  {
+    secretId: jwtSecret.id,
+    secretString: cfg.requireSecret('jwtSecret'),
+  }
+);
+
 const trailMateVpc = new aws.ec2.Vpc('trailMateVpc', {
   cidrBlock: '10.8.0.0/16',
   enableDnsSupport: true,
@@ -468,10 +481,9 @@ const githubActionsUser = new aws.iam.User('githubActionsUser', {
 const githubActionsUserEcsDeploy = new aws.iam.UserPolicyAttachment(
   'githubActionsUserEcsDeploy',
   {
-    auth: githubActionsUser.name,
+    user: githubActionsUser.name,
     policyArn: githubActionsEcsDeploy.arn,
-  },
-  {}
+  }
 );
 
 const trailMateDbSg = new aws.ec2.SecurityGroup('trailMateDbSg', {

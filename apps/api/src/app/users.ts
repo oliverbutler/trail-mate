@@ -277,6 +277,9 @@ export const verifyLogin = async ({
     .from(Users)
     .where(or(eq(Users.email, username), eq(Users.username, username)));
 
+  /**
+   * Don't return early to avoid timing attacks
+   */
   const dummyHash = '$2b$10$invalidhashthatdoesnotexist';
   const isPasswordValid = await bcrypt.compare(
     password,

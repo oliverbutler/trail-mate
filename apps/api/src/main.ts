@@ -6,7 +6,6 @@ import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { environment } from './env';
 import cron from 'node-cron';
 import { consumeEvents } from './queue-consumer';
-import { HttpError } from './httpError';
 
 const server = Fastify({
   logger: {
@@ -38,14 +37,6 @@ if (environment.ENVIRONMENT !== 'local') {
       });
   });
 }
-
-server.setErrorHandler(async (error, request, reply) => {
-  if (error instanceof HttpError) {
-    return reply.status(error.statusCode).send(error.body);
-  } else {
-    return reply.status(500).send({ message: 'Internal Server Error' });
-  }
-});
 
 server.listen({ port: environment.PORT, host: environment.HOST }, (err) => {
   if (err) {

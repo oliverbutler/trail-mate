@@ -35,7 +35,9 @@ export const createUser = async (dto: CreateUser): Promise<User> => {
     .execute();
 
   if (existingUser.length > 0) {
-    throw new Error('User already exists');
+    throw new HttpError(401, {
+      code: 'UserAlreadyExists',
+    });
   }
 
   const [user] = await db
@@ -51,7 +53,7 @@ export const createUser = async (dto: CreateUser): Promise<User> => {
     .execute();
 
   if (!user) {
-    throw new Error('User not created');
+    throw new Error('Something went wrong creating the user');
   }
 
   return mapEntityToUser(user);
@@ -157,8 +159,7 @@ export const verifyAccessToken = async (token: string): Promise<JwtPayload> => {
     return JwtPayloadSchema.parse(payload);
   } catch (e) {
     throw new HttpError(401, {
-      code: 'Unauthorized',
-      message: 'Invalid access token',
+      code: 'InvalidAccessToken',
     });
   }
 };
@@ -180,8 +181,7 @@ async function assertOldRefreshTokenNotUsed(
 
   if (!latestSessionInFamily[0]) {
     throw new HttpError(401, {
-      code: 'Unauthorized',
-      message: 'Unable to find refresh token, please login again',
+      code: 'InvalidRefreshToken',
     });
   }
 
@@ -195,8 +195,7 @@ async function assertOldRefreshTokenNotUsed(
       .execute();
 
     throw new HttpError(401, {
-      code: 'Unauthorized',
-      message: 'Refresh token is invalid, please login again',
+      code: 'InvalidRefreshToken',
     });
   }
 }
@@ -204,7 +203,9 @@ async function assertOldRefreshTokenNotUsed(
 function assertRefreshTokenIsNotExpired(expirationDate: Date) {
   const isRefreshTokenExpired = expirationDate < new Date();
   if (isRefreshTokenExpired) {
-    throw new Error('Refresh token expired');
+    throw new HttpError(401, {
+      code: 'InvalidRefreshToken',
+    });
   }
 }
 
@@ -217,7 +218,9 @@ async function assertRefreshTokenHashMatches(
     refreshTokenHash
   );
   if (!isRefreshTokenValid) {
-    throw new Error('Invalid refresh token');
+    throw new HttpError(401, {
+      code: 'InvalidRefreshToken',
+    });
   }
 }
 
@@ -238,7 +241,9 @@ export const exchangeRefreshToken = async ({
     .where(eq(UserSessions.id, refreshTokenId));
 
   if (!userSession) {
-    throw new Error('Invalid refresh token');
+    throw new HttpError(401, {
+      code: 'InvalidRefreshToken',
+    });
   }
 
   await assertRefreshTokenHashMatches(
@@ -279,7 +284,15 @@ export const verifyLogin = async ({
   );
 
   if (!isPasswordValid || !user) {
-    throw new Error('Invalid email or password');
+    throw new HttpError(401, {
+      code: 'InvalidCredentials',
+    });
+  }
+
+  if (!user.emailVerifiedAt) {
+    throw new HttpError(401, {
+      code: 'EmailNotVerified',
+    });
   }
 
   return mapEntityToUser(user);

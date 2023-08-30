@@ -10,7 +10,7 @@ const { assetExts, sourceExts } = defaultConfig.resolver;
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
  *
- * @type {import('metro-config').MetroConfig}
+ * @type {import("metro-config").MetroConfig}
  */
 const customConfig = {
   transformer: {
@@ -18,7 +18,7 @@ const customConfig = {
   },
   resolver: {
     assetExts: assetExts.filter((ext) => ext !== 'svg'),
-    sourceExts: [...sourceExts, 'svg'],
+    sourceExts: [...sourceExts, 'svg', 'mjs'],
     blockList: exclusionList([/^(?!.*node_modules).*\/dist\/.*/]),
     unstable_enableSymlinks: true,
     unstable_enablePackageExports: true,

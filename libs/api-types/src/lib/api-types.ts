@@ -6,8 +6,15 @@ const c = initContract();
 
 export const HTTP_ERRORS = {
   401: z.object({
-    code: z.literal('Unauthorized'),
-    message: z.string(),
+    code: z.enum([
+      'UserAlreadyExists',
+      'InvalidAccessToken',
+      'ExpiredToken',
+      'InvalidCredentials',
+      'InvalidRefreshToken',
+      'EmailNotVerified',
+    ]),
+    message: z.string().optional(),
   }),
 } as const;
 

@@ -16,7 +16,10 @@
     "react": "*",
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
-    "@babel/core": "*"
+    "@babel/core": "*",
+    "@ts-rest/core": "*",
+    "zod": "*",
+    "cuid": "*"
   },
   "scripts": {
     "eas-build-pre-install": "cd ../../ && node tools/scripts/eas-build-pre-install.mjs . apps/app && cp package-lock.json apps/app",

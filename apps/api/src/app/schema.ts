@@ -6,6 +6,7 @@ import {
   timestamp,
   pgEnum,
   serial,
+  unique,
 } from 'drizzle-orm/pg-core';
 import cuid from 'cuid';
 import { sql } from 'drizzle-orm';
@@ -44,18 +45,25 @@ export const Queue = pgTable('queues', {
     .default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const Users = pgTable('users', {
-  id: varchar('id').notNull().primaryKey().$defaultFn(generateUserId),
-  givenName: varchar('given_name').notNull(),
-  familyName: varchar('family_name').notNull(),
-  email: varchar('email').notNull(),
-  emailVerifiedAt: timestamp('email_verified_at'),
-  emailVerificationToken: varchar('email_verification_token')
-    .$defaultFn(() => randomBytes(32).toString('hex'))
-    .notNull(),
-  username: varchar('username').notNull(),
-  passwordHash: varchar('password_hash').notNull(),
-});
+export const Users = pgTable(
+  'users',
+  {
+    id: varchar('id').notNull().primaryKey().$defaultFn(generateUserId),
+    givenName: varchar('given_name').notNull(),
+    familyName: varchar('family_name').notNull(),
+    email: varchar('email').notNull(),
+    emailVerifiedAt: timestamp('email_verified_at'),
+    emailVerificationToken: varchar('email_verification_token')
+      .$defaultFn(() => randomBytes(32).toString('hex'))
+      .notNull(),
+    username: varchar('username').notNull(),
+    passwordHash: varchar('password_hash').notNull(),
+  },
+  (t) => ({
+    uniqueEmail: unique().on(t.email),
+    uniqueUsername: unique().on(t.username),
+  })
+);
 
 export const UserSessions = pgTable('user_sessions', {
   id: varchar('id').notNull().primaryKey().$defaultFn(generateUserSessionId),
@@ -64,10 +72,10 @@ export const UserSessions = pgTable('user_sessions', {
     .references(() => Users.id),
   refreshTokenHash: varchar('refresh_token_hash').notNull(),
   expiresAt: timestamp('expires_at').notNull(),
-  /**
-   * The time the refresh token was used to generate a new access token.
-   */
-  usedAt: timestamp('used_at'),
+  familyId: varchar('family_id').notNull(),
+  callerIp: varchar('caller_ip').notNull(),
+  callerUserAgent: varchar('caller_user_agent').notNull(),
+  invalidatedAt: timestamp('invalidated_at'),
   createdAt: timestamp('created_at')
     .notNull()
     .default(sql`CURRENT_TIMESTAMP`),

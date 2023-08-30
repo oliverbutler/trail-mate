@@ -12,6 +12,7 @@ import {
   verifyAccessToken,
   verifyLogin,
 } from './users';
+import { randomBytes } from 'crypto';
 
 export const s = initServer();
 
@@ -51,29 +52,35 @@ const router = s.router(contract, {
         body: await getUserById(sub),
       };
     },
-    login: async ({ body }) => {
+    login: async ({ body, request }) => {
       const user = await verifyLogin(body);
 
       const { accessToken, refreshToken, refreshTokenId } =
-        await createAccessAndRefreshToken(user);
+        await createAccessAndRefreshToken({
+          user: user,
+          familyId: randomBytes(32).toString('hex'),
+          callerIp: request.ip,
+          callerUserAgent: request.headers['user-agent'] || '',
+        });
 
       return {
         status: 200,
         body: {
-          user,
           accessToken,
           refreshToken,
           refreshTokenId,
         },
       };
     },
-    refreshToken: async ({ body }) => {
+    refreshToken: async ({ body, request }) => {
       return {
         status: 200,
-        body: await exchangeRefreshToken(
-          body.refreshToken,
-          body.refreshTokenId
-        ),
+        body: await exchangeRefreshToken({
+          refreshToken: body.refreshToken,
+          refreshTokenId: body.refreshTokenId,
+          callerIp: request.ip,
+          callerUserAgent: request.headers['user-agent'] || '',
+        }),
       };
     },
   },
@@ -103,6 +110,10 @@ const router = s.router(contract, {
         name,
       })
       .returning();
+
+    if (!result) {
+      throw new Error('Failed to create track');
+    }
 
     return {
       status: 200,

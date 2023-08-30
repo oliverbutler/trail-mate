@@ -1,0 +1,1 @@
+ALTER TABLE "user_sessions" ADD COLUMN "family_id" varchar NOT NULL;

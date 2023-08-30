@@ -9,7 +9,7 @@ export type UserId = string & {
 export const UserIdSchema = z.string().refine((val) => {
   const [prefix, id] = val.split('_');
 
-  return prefix === 'u' && cuid.isCuid(id);
+  return prefix === 'u' && cuid.isCuid(String(id));
 });
 
 export type UserSessionId = string & {
@@ -19,7 +19,7 @@ export type UserSessionId = string & {
 export const UserSessionIdSchema = z.string().refine((val) => {
   const [prefix, id] = val.split('_');
 
-  return prefix === 'us' && cuid.isCuid(id);
+  return prefix === 'us' && cuid.isCuid(String(id));
 });
 
 export const UserSchema = z.object({

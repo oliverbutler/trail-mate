@@ -4,6 +4,13 @@ import { CreateUserSchema, UserSchema } from './types';
 
 const c = initContract();
 
+export const HTTP_ERRORS = {
+  401: z.object({
+    code: z.literal('Unauthorized'),
+    message: z.string(),
+  }),
+} as const;
+
 export const contract = c.router(
   {
     getHealth: {
@@ -14,6 +21,7 @@ export const contract = c.router(
           status: z.string(),
           uptime: z.number(),
         }),
+        ...HTTP_ERRORS,
       },
     },
     auth: c.router({
@@ -23,6 +31,7 @@ export const contract = c.router(
         body: CreateUserSchema,
         responses: {
           200: UserSchema,
+          ...HTTP_ERRORS,
         },
       },
       verifyEmail: {
@@ -35,22 +44,23 @@ export const contract = c.router(
             contentType: 'text/html',
             body: c.type<string>(),
           }),
+          ...HTTP_ERRORS,
         },
       },
       login: {
         method: 'POST',
         path: '/auth/login',
         body: z.object({
-          emailOrUsername: z.string(),
+          username: z.string(),
           password: z.string(),
         }),
         responses: {
           200: z.object({
-            user: UserSchema,
             accessToken: z.string(),
             refreshToken: z.string(),
             refreshTokenId: z.string(),
           }),
+          ...HTTP_ERRORS,
         },
       },
       refreshToken: {
@@ -66,6 +76,7 @@ export const contract = c.router(
             refreshToken: z.string(),
             refreshTokenId: z.string(),
           }),
+          ...HTTP_ERRORS,
         },
       },
       getMe: {
@@ -73,6 +84,7 @@ export const contract = c.router(
         path: '/auth/me',
         responses: {
           200: UserSchema,
+          ...HTTP_ERRORS,
         },
         headers: z.object({
           authorization: z.string(),
@@ -89,6 +101,7 @@ export const contract = c.router(
             name: z.string(),
           })
           .array(),
+        ...HTTP_ERRORS,
       },
     },
     createTrack: {
@@ -102,6 +115,7 @@ export const contract = c.router(
           id: z.string(),
           name: z.string(),
         }),
+        ...HTTP_ERRORS,
       },
     },
   },

@@ -1,0 +1,1 @@
+ALTER TABLE "user_sessions" RENAME COLUMN "used_at" TO "invalidated_at";

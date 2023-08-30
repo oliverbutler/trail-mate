@@ -6,21 +6,27 @@ export type UserId = string & {
   __id: 'user';
 };
 
-export const UserIdSchema = z.string().refine((val) => {
-  const [prefix, id] = val.split('_');
+export const UserIdSchema = z
+  .string()
+  .refine((val) => {
+    const [prefix, id] = val.split('_');
 
-  return prefix === 'u' && cuid.isCuid(String(id));
-});
+    return prefix === 'u' && cuid.isCuid(String(id));
+  })
+  .transform((val) => val as UserId);
 
 export type UserSessionId = string & {
   __id: 'userSession';
 };
 
-export const UserSessionIdSchema = z.string().refine((val) => {
-  const [prefix, id] = val.split('_');
+export const UserSessionIdSchema = z
+  .string()
+  .refine((val) => {
+    const [prefix, id] = val.split('_');
 
-  return prefix === 'us' && cuid.isCuid(String(id));
-});
+    return prefix === 'us' && cuid.isCuid(String(id));
+  })
+  .transform((val) => val as UserSessionId);
 
 export const UserSchema = z.object({
   id: UserIdSchema,

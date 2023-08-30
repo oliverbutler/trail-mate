@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "trailmate",
     "name": "App",
     "slug": "app",
     "version": "1.0.0",

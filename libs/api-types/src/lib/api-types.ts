@@ -1,6 +1,6 @@
 import { initContract } from '@ts-rest/core';
 import { z } from 'zod';
-import { CreateUserSchema, UserSchema } from './types';
+import { CreateUserSchema, UserSchema, UserSessionIdSchema } from './types';
 
 const c = initContract();
 
@@ -18,41 +18,51 @@ export const HTTP_ERRORS = {
   }),
 } as const;
 
+const createResponses = <T>(options: T) => {
+  return {
+    ...options,
+    ...HTTP_ERRORS,
+  } as const;
+};
+
 export const contract = c.router(
   {
     getHealth: {
       method: 'GET',
       path: '/health',
-      responses: {
+      responses: createResponses({
         200: z.object({
           status: z.string(),
           uptime: z.number(),
         }),
-        ...HTTP_ERRORS,
-      },
+      }),
     },
     auth: c.router({
       register: {
         method: 'POST',
         path: '/auth/register',
         body: CreateUserSchema,
-        responses: {
+        responses: createResponses({
           200: UserSchema,
-          ...HTTP_ERRORS,
-        },
+        }),
+        headers: z.object({
+          authorization: z.string().optional(),
+        }),
       },
       verifyEmail: {
         method: 'GET',
         path: '/auth/verify-email/:token',
         description:
           "Verifies a user's email address and shows a static confirmation page.",
-        responses: {
+        responses: createResponses({
           200: c.otherResponse({
             contentType: 'text/html',
             body: c.type<string>(),
           }),
-          ...HTTP_ERRORS,
-        },
+        }),
+        headers: z.object({
+          authorization: z.string().optional(),
+        }),
       },
       login: {
         method: 'POST',
@@ -61,14 +71,17 @@ export const contract = c.router(
           username: z.string(),
           password: z.string(),
         }),
-        responses: {
+        responses: createResponses({
           200: z.object({
+            user: UserSchema,
             accessToken: z.string(),
             refreshToken: z.string(),
-            refreshTokenId: z.string(),
+            refreshTokenId: UserSessionIdSchema,
           }),
-          ...HTTP_ERRORS,
-        },
+        }),
+        headers: z.object({
+          authorization: z.string().optional(),
+        }),
       },
       refreshToken: {
         method: 'POST',
@@ -77,39 +90,36 @@ export const contract = c.router(
           refreshToken: z.string(),
           refreshTokenId: z.string(),
         }),
-        responses: {
+        responses: createResponses({
           200: z.object({
             accessToken: z.string(),
             refreshToken: z.string(),
-            refreshTokenId: z.string(),
+            refreshTokenId: UserSessionIdSchema,
           }),
-          ...HTTP_ERRORS,
-        },
+        }),
+        headers: z.object({
+          authorization: z.string().optional(),
+        }),
       },
       getMe: {
         method: 'GET',
         path: '/auth/me',
-        responses: {
+        responses: createResponses({
           200: UserSchema,
-          ...HTTP_ERRORS,
-        },
-        headers: z.object({
-          authorization: z.string(),
         }),
       },
     }),
     getTracks: {
       method: 'GET',
       path: '/tracks',
-      responses: {
+      responses: createResponses({
         200: z
           .object({
             id: z.string(),
             name: z.string(),
           })
           .array(),
-        ...HTTP_ERRORS,
-      },
+      }),
     },
     createTrack: {
       method: 'POST',
@@ -117,16 +127,18 @@ export const contract = c.router(
       body: z.object({
         name: z.string(),
       }),
-      responses: {
+      responses: createResponses({
         200: z.object({
           id: z.string(),
           name: z.string(),
         }),
-        ...HTTP_ERRORS,
-      },
+      }),
     },
   },
   {
     strictStatusCodes: true,
+    baseHeaders: z.object({
+      authorization: z.string(),
+    }),
   }
 );

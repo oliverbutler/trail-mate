@@ -3,7 +3,9 @@ const { getDefaultConfig } = require('@expo/metro-config');
 const { mergeConfig } = require('metro-config');
 const exclusionList = require('metro-config/src/defaults/exclusionList');
 
-const defaultConfig = getDefaultConfig(__dirname);
+const defaultConfig = getDefaultConfig(__dirname, {
+  isCSSEnabled: true,
+});
 const { assetExts, sourceExts } = defaultConfig.resolver;
 
 /**
@@ -17,11 +19,11 @@ const customConfig = {
     babelTransformerPath: require.resolve('react-native-svg-transformer'),
   },
   resolver: {
-    assetExts: assetExts.filter((ext) => ext !== 'svg'),
+    assetExts: [...assetExts.filter((ext) => ext !== 'svg'), 'css'],
     sourceExts: [...sourceExts, 'svg', 'mjs'],
     blockList: exclusionList([/^(?!.*node_modules).*\/dist\/.*/]),
     unstable_enableSymlinks: true,
-    unstable_enablePackageExports: true,
+    unstable_enablePackageExports: false,
   },
 };
 
@@ -30,7 +32,7 @@ module.exports = withNxMetro(mergeConfig(defaultConfig, customConfig), {
   // Useful if you have issues resolving modules
   debug: false,
   // all the file extensions used for imports other than 'ts', 'tsx', 'js', 'jsx', 'json'
-  extensions: [],
+  extensions: ['css'],
   // Specify folders to watch, in addition to Nx defaults (workspace libraries and node_modules)
   watchFolders: [],
 });

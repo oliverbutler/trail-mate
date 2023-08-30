@@ -6,6 +6,7 @@ import {
   JwtPayload,
   JwtPayloadSchema,
   User,
+  UserId,
 } from '@trail-mate/api-types';
 import { eq, or, sql } from 'drizzle-orm';
 import * as jwt from 'jsonwebtoken';
@@ -15,7 +16,7 @@ import { randomBytes } from 'crypto';
 import { HttpError } from '../httpError';
 
 const mapEntityToUser = (user: typeof Users.$inferSelect): User => ({
-  id: user.id,
+  id: user.id as UserId,
   givenName: user.givenName,
   familyName: user.familyName,
   username: user.username,

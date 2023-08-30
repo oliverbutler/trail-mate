@@ -44,8 +44,10 @@ const router = s.router(contract, {
         };
       }
     },
-    getMe: async ({ headers: { authorization } }) => {
+    getMe: async ({ headers: { authorization }, request }) => {
       const { sub } = await verifyAccessToken(authorization);
+
+      console.log(request.headers);
 
       return {
         status: 200,
@@ -66,6 +68,7 @@ const router = s.router(contract, {
       return {
         status: 200,
         body: {
+          user,
           accessToken,
           refreshToken,
           refreshTokenId,
@@ -93,7 +96,9 @@ const router = s.router(contract, {
       },
     };
   },
-  getTracks: async ({}) => {
+  getTracks: async ({ headers: { authorization } }) => {
+    const { sub } = await verifyAccessToken(authorization);
+
     const tracks = await db.select().from(Tracks);
 
     return {
